@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Argument Invalidator</title>
+</head>
+<body style="background: #51004c;color: #fff;font-family: system-ui;">
+  <h1>Argument Invalidator</h1>
+  <p>For increased success, send "No. Fake." along with the generated picture.</p>
+  <input type="file" accept="image/*" id="picker"><br>
+  <canvas width="1200" height="900" id="canvas" style="width: 400px"></canvas>
+  <script>
+const loadImage = src => new Promise((onload, onerror) => Object.assign(new Image(), {src, onload, onerror, crossOrigin: "anonymous"})).then(e => e.target)
+const ctx = canvas.getContext("2d")
+const bg = loadImage("https://owo.whats-th.is/9Kh4zRs.png")
+const animeGirl = loadImage("https://owo.whats-th.is/Abfx5dS.png")
+const scale = 3;
+const x = 14 * scale;
+const y = x;
+const radius = 2 * scale;
+const width = canvas.width - x * 2;
+const height = canvas.height - y * 2;
+(picker.onchange = () => picker.files.length && Promise.all([loadImage(URL.createObjectURL(picker.files[0])), bg, animeGirl]).then(([img, bg, animeGirl]) => {
+  ctx.clearRect(0,0,canvas.width,canvas.height)
+  ctx.drawImage(bg, 0, 0)
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+  ctx.clip();
+  ctx.drawImage(img,x,y,width,img.height/img.width*width);
+  ctx.restore();
+  ctx.drawImage(animeGirl,width-animeGirl.width+80,canvas.height - 12 *scale - animeGirl.height);
+}).catch(e=>alert("Error generating image: "+e)))();
+  </script>
+</body>
+</html>
